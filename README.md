@@ -101,7 +101,3 @@ LinkedIn: [linkedin.com/in/pothansai0408](https://www.linkedin.com/in/pothansai0
 GitHub: [PothanSai2004](https://github.com/PothanSai2004)
 
 ---
-
-## 🔄 Future Upgrade Option
-
-You can later switch from **Gemini 2.5 Pro** to **Ollama + Mistral** for fully local LLM execution. This requires changing only the LLM interface logic in `llm_gemini.py`. The rest of the project (FastAPI, SQL execution, UI) remains the same.
