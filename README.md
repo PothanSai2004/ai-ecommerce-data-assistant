@@ -1,4 +1,5 @@
 # AI-Ecommerce-Data-Assistant
+
 ## 💡 Gemini LLM + PostgreSQL: Intelligent SQL Assistant with Visualizations
 
 An intelligent web-based data assistant that leverages **Google Gemini 2.5 Pro**, **FastAPI**, and **PostgreSQL** to translate natural language questions into SQL queries, fetch data, and return **interactive visualizations** using **Plotly.js**.
@@ -34,9 +35,9 @@ An intelligent web-based data assistant that leverages **Google Gemini 2.5 Pro**
 
 ### 1. Clone the repository
 
-```bash
 git clone https://github.com/your-username/gemini-sql-assistant.git
 cd gemini-sql-assistant
+
 
 ### 2. Create and activate a virtual environment
 python -m venv venv
