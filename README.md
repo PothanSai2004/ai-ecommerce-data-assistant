@@ -8,104 +8,100 @@ An intelligent web-based data assistant that leverages **Google Gemini 2.5 Pro**
 
 ## 🧠 Features
 
-- ✅ **Natural Language to SQL** using Google Gemini 2.5 Pro
-- ✅ **PostgreSQL Query Execution** with data integrity
-- ✅ **LLM-aware Prompt Engineering** with schema grounding
-- ✅ **Interactive Web UI** with results, generated SQL, and charts
-- ✅ **Bar Charts / Trendlines** via Plotly.js
-- ✅ **Typing Animation for SQL display**
-- ✅ **Input/Submit control** during response generation
+- Natural language to SQL conversion using Gemini 2.5 Pro
+- PostgreSQL query execution with schema-aware prompting
+- Schema-grounded SQL generation logic
+- Interactive web UI displaying SQL + tabular data + visual charts
+- Plotly.js visualizations: bar charts and time trendlines
+- Typing animation effect for SQL display
+- Input lock during generation to prevent spamming
 
 ---
 
 ## 🏗️ Project Structure
-.
-├── main.py # FastAPI backend
-├── llm_gemini.py # Gemini prompt + SQL generation logic
-├── sql_executor.py # Executes generated SQL against PostgreSQL
-├── .env # Environment config (API keys, DB creds)
-├── requirements.txt # Python dependencies
-├── templates/
-│ └── index.html # Frontend UI (HTML + Plotly.js + animations)
-└── README.md # 📄 You are here
+
+- `main.py` — FastAPI backend server
+- `llm_gemini.py` — Gemini API integration & SQL generation logic
+- `sql_executor.py` — Executes generated SQL queries
+- `.env` — Environment config (API keys, DB credentials)
+- `requirements.txt` — Python dependencies
+- `templates/index.html` — Frontend (UI + JS + Plotly)
+- `README.md` — You are here
 
 ---
 
 ## ⚙️ Setup Instructions
 
-### 1. Clone the repository
+1. Clone this repository and navigate into it  
+   Repository URL: `https://github.com/your-username/gemini-sql-assistant.git`
 
-git clone https://github.com/your-username/gemini-sql-assistant.git
-cd gemini-sql-assistant
+2. Create a virtual environment using Python and activate it
 
+3. Install all dependencies listed in `requirements.txt`
 
-### 2. Create and activate a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+4. Create a `.env` file in the project root with the following variables:
+   - `GEMINI_API_KEY`: Your Google Gemini Pro API key
+   - `DB_HOST`: Your PostgreSQL host (usually `localhost`)
+   - `DB_NAME`: Your PostgreSQL database name
+   - `DB_USER`: Your PostgreSQL username
+   - `DB_PASSWORD`: Your PostgreSQL password
+   - `DB_PORT`: Usually `5432`
 
-### 3. Install Dependencies
-pip install -r requirements.txt
+---
 
-### 4. Set up your .env file
-Create a .env file in the root directory:
+## 🚀 Running the App
 
-    GEMINI_API_KEY=your_google_gemini_api_key
-    DB_HOST=localhost
-    DB_NAME=your_db_name
-    DB_USER=your_db_user
-    DB_PASSWORD=your_db_password
-    DB_PORT=5432
+Start the FastAPI server using Uvicorn.  
+Once started, you can access the app at `http://localhost:8000`  
+Swagger documentation is available at `http://localhost:8000/docs`
 
-##🚀 Running the App
-uvicorn main:app --reload
+---
 
-Visit: http://localhost:8000
-The FastAPI Swagger UI is also available at:
-http://localhost:8000/docs
+## 🌐 Web Interface Overview
 
-## 🌐 Web Interface (Frontend)
-- Accepts natural language questions (e.g., "Show RoAS per item.")
-
+- Accepts natural language queries from the user
+- Generates the corresponding SQL query
 - Displays:
+  - The SQL with a typing animation
+  - Tabular query results
+  - Visualizations (if applicable)
 
--- The generated SQL query (with typing animation)
+### Chart Rendering Logic
 
--- Tabular query results
+- Visualizations are shown when data includes groupings (e.g., per item or date)
+- No charts are displayed for simple aggregate metrics (like total sales)
 
--- Interactive visualizations:
-
---- 📊 Bar Charts for per-item metrics
-
---- 📈 Line/Scatter Charts for time trends
-
-📊 Visualization Logic
-Charting is conditional:
-
-- ✅ Displayed only for suitable data (e.g., item_id, date groupings)
-
-- ❌ Skipped for single aggregated metrics
-
-Handled via Plotly.js.
+---
 
 ## 🧪 Example Prompts
-| Prompt                       | Output                       |
-| ---------------------------- | ---------------------------- |
-| Show RoAS per item           | SQL + RoAS table + bar chart |
-| Trend of ad spend over time  | SQL + trendline              |
-| Total units sold last 7 days | SQL + table only             |
 
-## 🧠 Tech Stack
-- 🔮 Gemini 2.5 Pro (Google Generative AI)
+| User Prompt                   | Output Type                        |
+|------------------------------|-------------------------------------|
+| Show RoAS per item           | SQL + Table + Bar Chart             |
+| Trend of ad spend over time  | SQL + Table + Line Chart            |
+| Total units sold last 7 days | SQL + Table Only                    |
 
-- 🐍 FastAPI (Python backend)
+---
 
-- 🐘 PostgreSQL (RDBMS)
+## 🧰 Tech Stack
 
-- 🎨 Plotly.js (Visualization)
+- **Gemini 2.5 Pro** — Natural language processing
+- **FastAPI** — Backend framework
+- **PostgreSQL** — Database engine
+- **Plotly.js** — Interactive charts
+- **HTML, CSS, JavaScript** — Frontend
 
-- 🌐 HTML/CSS/JavaScript (Frontend)
+---
 
+## 👨‍💻 Author
 
-👨‍💻 Author
-T. Pothan Sai
-PothanSai2004 • www.linkedin.com/in/pothansai0408 • pothansaithummala@gmail.com
+**T. Pothan Sai**  
+Email: pothansaithummala@gmail.com  
+LinkedIn: [linkedin.com/in/pothansai0408](https://www.linkedin.com/in/pothansai0408)  
+GitHub: [PothanSai2004](https://github.com/PothanSai2004)
+
+---
+
+## 🔄 Future Upgrade Option
+
+You can later switch from **Gemini 2.5 Pro** to **Ollama + Mistral** for fully local LLM execution. This requires changing only the LLM interface logic in `llm_gemini.py`. The rest of the project (FastAPI, SQL execution, UI) remains the same.
