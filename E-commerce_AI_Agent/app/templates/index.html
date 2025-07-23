@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>E-commerce Data Assistant</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      padding: 5px 40px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      text-align: center;
+      color: #1f73b7;
+      margin-bottom: 20px;
+    }
+
+    .chat-box {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      height: 70vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .message {
+      max-width: 90%;
+      padding: 40px 20px;
+      border-radius: 12px;
+      line-height: 1.5;
+    }
+
+    .user {
+      background-color: #1f73b7;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 0;
+    }
+
+    .assistant {
+      background-color: #e2e8f0;
+      color: #333;
+      align-self: flex-start;
+      border-bottom-left-radius: 0;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    textarea {
+      flex: 1;
+      height: 35px;
+      font-size: 16px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      resize: none;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #1f73b7;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    body.dark-mode {
+      background-color: #2c2c2c;
+      color: #f1f1f1;
+    }
+
+    body.dark-mode textarea,
+    body.dark-mode pre,
+    body.dark-mode table,
+    body.dark-mode th,
+    body.dark-mode td {
+      background-color: #1e1e1e;
+      color: #eaeaea;
+      border-color: #444;
+    }
+
+    body.dark-mode button {
+      background-color: rgb(68, 122, 219);
+      color: #fff;
+    }
+
+    body.dark-mode button:hover:enabled {
+      background-color: rgb(68, 122, 219);
+    }
+
+    body.dark-mode th {
+      background-color: #2563eb;
+    }
+
+    body.dark-mode tr:hover {
+      background-color: #2c2c2c;
+    }
+
+    .dark-mode {
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+    }
+
+    .dark-mode textarea,
+    .dark-mode pre,
+    .dark-mode table {
+      background-color: #2a2a2a;
+      color: #f0f0f0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #1f73b7;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    #chart {
+      margin-top: 20px;
+    }
+
+    .typing {
+      font-family: Consolas, monospace;
+      background-color: #f0f0f0;
+      padding: 10px;
+      border-radius: 6px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI E-commerce Chat Assistant</h1>
+
+    <div class="chat-box" id="chatBox"></div>
+
+    <div class="input-area">
+      <textarea id="question" placeholder="Ask your question..."></textarea>
+      <div style="text-align: right; margin-bottom: 20px;">
+        <button id="submitBtn" onclick="askQuestion()">Send</button>
+        <button id="clearChat" onclick="clearChat()" style="margin-right: 10px;">Clear Chat</button>
+        <button id="themeToggle" onclick="toggleTheme()" title="Toggle Theme" style="font-size: 18px; padding: 10px;">
+          <i id="themeIcon" class="fas fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function appendMessage(content, className) {
+      const message = document.createElement("div");
+      message.className = `message ${className}`;
+      message.innerHTML = content;
+      document.getElementById("chatBox").appendChild(message);
+      message.scrollIntoView({ behavior: "smooth", block: "end" });
+      return message;
+    }
+
+    function typeSQL(text, element, callback) {
+      let i = 0;
+      const speed = 60;
+      function type() {
+        if (i < text.length) {
+          element.innerText += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        } else if (callback) {
+          callback();
+        }
+      }
+      type();
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const icon = document.getElementById("themeIcon");
+
+      body.classList.toggle("dark-mode");
+
+      if (body.classList.contains("dark-mode")) {
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+      } else {
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+      }
+    }
+
+    function clearChat() {
+      const questionInput = document.getElementById("question");
+      if (questionInput) questionInput.value = "";
+
+      const chatBox = document.getElementById("chatBox");
+      if (chatBox) chatBox.innerHTML = "";
+
+      const chart = document.getElementById("chart");
+      if (chart && chart.parentElement) {
+        chart.parentElement.remove();
+      }
+    }
+
+    window.onload = function () {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "dark") {
+        document.body.classList.add("dark-mode");
+      }
+    };
+
+
+    async function askQuestion() {
+      const question = document.getElementById("question").value.trim();
+      const submitBtn = document.getElementById("submitBtn");
+      const chatBox = document.getElementById("chatBox");
+
+      if (!question) return alert("Please enter a question.");
+      submitBtn.disabled = true;
+      document.getElementById("question").value = "";
+
+      appendMessage(question, "user");
+
+      const sqlMsg = appendMessage("<em>Thinking...</em>", "assistant");
+
+      try {
+        const res = await fetch("http://localhost:8000/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+        const data = await res.json();
+
+        const sqlText = data.sql || data.sql_attempted || "No SQL returned.";
+        sqlMsg.innerHTML = `<strong>Generated SQL:</strong><br><div class="typing"></div>`;
+        const typingEl = sqlMsg.querySelector(".typing");
+
+        typeSQL(sqlText, typingEl, () => {
+          if (data.results && data.results.length > 0) {
+            const headers = Object.keys(data.results[0]);
+
+            let html = "<table><thead><tr>";
+            headers.forEach(h => html += `<th>${h}</th>`);
+            html += "</tr></thead><tbody>";
+
+            data.results.forEach(row => {
+              html += "<tr>";
+              headers.forEach(h => html += `<td>${row[h]}</td>`);
+              html += "</tr>";
+            });
+
+            html += "</tbody></table>";
+            const tableMsg = appendMessage(html, "assistant");
+
+            // Visualization
+            const hasItem = headers.includes("item_id");
+            const hasDate = headers.includes("date");
+
+            if ((hasItem && headers.length === 2) || (hasDate && headers.length >= 2)) {
+              const chartContainer = document.createElement("div");
+              chartContainer.id = "chart";
+              const chartMsg = appendMessage("", "assistant");
+              chartMsg.appendChild(chartContainer);
+
+              if (hasItem && headers.length === 2) {
+                const x = data.results.map(r => r["item_id"]);
+                const yKey = headers.find(h => h !== "item_id");
+                const y = data.results.map(r => r[yKey]);
+                Plotly.newPlot(chartContainer, [{
+                  x, y, type: 'bar'
+                }], {
+                  title: "Item-wise Metric",
+                  xaxis: { title: "Item ID" },
+                  yaxis: { title: yKey }
+                });
+              }
+
+              if (hasDate && headers.length >= 2) {
+                const x = data.results.map(r => r["date"]);
+                const yKey = headers.find(h => h !== "date");
+                const y = data.results.map(r => r[yKey]);
+                Plotly.newPlot(chartContainer, [{
+                  x, y, type: 'scatter', mode: 'lines+markers'
+                }], {
+                  title: "Time Trend",
+                  xaxis: { title: "Date" },
+                  yaxis: { title: yKey }
+                });
+              }
+            }
+          } else {
+            appendMessage(`<strong>Error:</strong> ${data.error || "No results."}`, "assistant");
+          }
+        });
+
+      } catch (error) {
+        appendMessage(`<strong>Error:</strong> ${error.message}`, "assistant");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
