@@ -1,5 +1,6 @@
 # AI-Ecommerce-Data-Assistant 
-Implementation link: https://drive.google.com/file/d/1iYeA15OgNsFOREa8vpqgD565QuG-qCOc/view?usp=sharing
+📁 Access the implementation here:
+🔗 https://drive.google.com/file/d/1iYeA15OgNsFOREa8vpqgD565QuG-qCOc/view?usp=sharing
 ## 💡 Gemini LLM + PostgreSQL: Intelligent SQL Assistant with Visualizations
 
 An intelligent web-based data assistant that leverages **Google Gemini 2.5 Pro**, **FastAPI**, and **PostgreSQL** to translate natural language questions into SQL queries, fetch data, and return **interactive visualizations** using **Plotly.js**.
