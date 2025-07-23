@@ -79,7 +79,6 @@ User question: "{question}"
     response = model.generate_content(prompt)
     sql_raw = response.text.strip()
 
-    # 🔥 Remove triple backticks and "sql" language hints
     cleaned_sql = re.sub(r"```sql\s*([\s\S]+?)```", r"\1", sql_raw, flags=re.IGNORECASE)
     cleaned_sql = re.sub(r"```([\s\S]+?)```", r"\1", cleaned_sql, flags=re.IGNORECASE)
 
