@@ -1,2 +1,0 @@
-Gemini 2.5 api:
-AIzaSyBUDPRLWgL_9ydr6ADHofswBn_QBvzi7nw
