@@ -86,7 +86,7 @@ Swagger documentation is available at `http://localhost:8000/docs`
 
 ## 🧰 Tech Stack
 
-- **Gemini 2.5 Pro** — Natural language processing
+- **Gemini 2.5 Pro/Gemini 1.5 latest** — Natural language processing
 - **FastAPI** — Backend framework
 - **PostgreSQL** — Database engine
 - **Plotly.js** — Interactive charts
